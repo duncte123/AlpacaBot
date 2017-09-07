@@ -39,19 +39,19 @@ public class AlpacaBot extends ListenerAdapter {
             return;
         }
 
-        if(!event.getMessage().getMentionedUsers().contains(event.getJDA().getSelfUser()) && !event.getTextChannel().canTalk()) {
-            return;
+        if(event.getMessage().getMentionedUsers().contains(event.getJDA().getSelfUser())) {
+            try {
+                Document doc = Jsoup.connect("http://www.randomalpaca.com/").get();
+
+                Element img = doc.select("img").first();
+                event.getTextChannel().sendFile(new URL(img.attributes().get("src")).openStream(), "Alpaca_" + System.currentTimeMillis() + ".png", null).queue();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                event.getTextChannel().sendMessage("ERROR: " + e.getMessage()).queue();
+            }
         }
 
-        try {
-            Document doc = Jsoup.connect("http://www.randomalpaca.com/").get();
 
-            Element img = doc.select("img").first();
-            event.getTextChannel().sendFile(new URL(img.attributes().get("src")).openStream(), "Alpaca_" + System.currentTimeMillis() + ".png", null).queue();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            event.getTextChannel().sendMessage("ERROR: " + e.getMessage()).queue();
-        }
     }
 }
